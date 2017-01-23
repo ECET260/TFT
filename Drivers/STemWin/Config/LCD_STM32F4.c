@@ -98,7 +98,8 @@ void InitLCD_SSD1289()
     Write_CD(0x0010, 0x0000 ); // sleep mode: 0 = exit, 1 = enter
 //    TFT_Orientation(_orientation);
     Write_CD(0x0001, 0x2B3F ); // driver output control
-    Write_CD(0x0011, 0x6078 ); // entry mode
+//    Write_CD(0x0011, 0x6078 ); // entry mode
+    Write_CD(0x0011, 0x6830); // por entry mode
     //
     Write_CD(0x0005, 0x0000 ); // compare register
     Write_CD(0x0006, 0x0000 ); // compare register

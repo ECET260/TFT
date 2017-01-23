@@ -68,7 +68,12 @@ static void MX_USART2_UART_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
+#define  LCD_BASE_Addr               ((unsigned int)(0x60000000 | 0x00000000))
+#define  LCD_BASE_Data               ((unsigned int)(0x60000000|0x00020000))
+//#define  LCD_CMD                     (*(unsigned short int *)(LCD_BASE_Addr))
+//#define  LCD_Data                    (*(unsigned short int *)(LCD_BASE_Data))
+#define LCD_CMD 	(uint32_t *)LCD_BASE_Addr
+#define LCD_Data	(uint32_t *)LCD_BASE_Data
 /* USER CODE END 0 */
 
 int main(void)
@@ -96,16 +101,19 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	GUI_Init();
 
-	GUI_SetFont(&GUI_Font8x16);
-
 	GUI_SetBkColor(GUI_BLUE);
 	GUI_Clear();
 
-	GUI_SetFont(&GUI_Font32B_ASCII);
+	GUI_SetFont(&GUI_Font24_1);
 	GUI_SetColor(GUI_YELLOW);		//foreground or text color
 
 	GUI_DispStringHCenterAt("ECET260", 160, 100);
 
+
+	int regTemp;
+
+	HAL_SRAM_Read_16b(&hsram1, LCD_CMD, &regTemp, 1);
+	GUI_DispHexAt(regTemp, 130, 200, 4);
 	GUI_Exec();
 
   /* USER CODE END 2 */
@@ -312,20 +320,20 @@ static void MX_FSMC_Init(void)
   hsram1.Init.WriteBurst = FSMC_WRITE_BURST_DISABLE;
   hsram1.Init.PageSize = FSMC_PAGE_SIZE_NONE;
   /* Timing */
-  Timing.AddressSetupTime = 5;
+  Timing.AddressSetupTime = 15;
   Timing.AddressHoldTime = 15;
-  Timing.DataSetupTime = 42;
-  Timing.BusTurnAroundDuration = 15;
-  Timing.CLKDivision = 16;
-  Timing.DataLatency = 17;
+  Timing.DataSetupTime = 15;
+  Timing.BusTurnAroundDuration = 0;
+  Timing.CLKDivision = 0;
+  Timing.DataLatency = 0;
   Timing.AccessMode = FSMC_ACCESS_MODE_A;
   /* ExtTiming */
-  ExtTiming.AddressSetupTime = 5;
-  ExtTiming.AddressHoldTime = 15;
-  ExtTiming.DataSetupTime = 5;
-  ExtTiming.BusTurnAroundDuration = 5;
-  ExtTiming.CLKDivision = 16;
-  ExtTiming.DataLatency = 17;
+  ExtTiming.AddressSetupTime = 3;
+  ExtTiming.AddressHoldTime = 0;
+  ExtTiming.DataSetupTime = 3;
+  ExtTiming.BusTurnAroundDuration = 0;
+  ExtTiming.CLKDivision = 0;
+  ExtTiming.DataLatency = 0;
   ExtTiming.AccessMode = FSMC_ACCESS_MODE_A;
 
   if (HAL_SRAM_Init(&hsram1, &Timing, &ExtTiming) != HAL_OK)
