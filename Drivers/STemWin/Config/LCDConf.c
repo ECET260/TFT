@@ -54,9 +54,12 @@ Purpose     : Display controller configuration (single layer)
 #include "GUI.h"
 #include "GUIDRV_FlexColor.h"
 
-//#include "LCD_STM32F4.h"
+#include "LCDConf.h"
+#include "LCD_STM32F4.h"
 
 #include "GUITDRV_ADS7846.h"
+
+#include "stm32f4xx_hal.h"
 //#include "ts.h"
 
 //#include "LCDConf_FlexColor_Template.h"
@@ -64,6 +67,9 @@ Purpose     : Display controller configuration (single layer)
 GUITDRV_ADS7846_CONFIG pConfig;
 GUITDRV_ADS7846_LAST_VAL p;
 GUI_PID_STATE pstate;
+
+
+extern SRAM_HandleTypeDef hsram1;
 
 /*********************************************************************
 *
@@ -75,11 +81,31 @@ GUI_PID_STATE pstate;
 //
 // Physical display size
 //
+#ifdef SSD1963
+
+#define XSIZE_PHYS  800 // To be adapted to x-screen size
+#define YSIZE_PHYS  480 // To be adapted to y-screen size
+
+#define VXSIZE_PHYS         800
+#define VYSIZE_PHYS         480
+
+#elif ILI9481
+
+#define XSIZE_PHYS  320 // To be adapted to x-screen size
+#define YSIZE_PHYS  480 // To be adapted to y-screen size
+
+#define VXSIZE_PHYS         320
+#define VYSIZE_PHYS         480
+
+#else
+
 #define XSIZE_PHYS  240 // To be adapted to x-screen size
 #define YSIZE_PHYS  320 // To be adapted to y-screen size
 
 #define VXSIZE_PHYS         240
 #define VYSIZE_PHYS         320
+
+#endif
 
 /* Color conversion */
 #define COLOR_CONVERSION    GUICC_M565
@@ -102,7 +128,7 @@ GUI_PID_STATE pstate;
 //#define DISPLAY_ORIENTATION (GUI_MIRROR_X | GUI_MIRROR_Y)
 //#define DISPLAY_ORIENTATION (GUI_SWAP_XY | GUI_MIRROR_X)
 //#define DISPLAY_ORIENTATION (GUI_MIRROR_X)
-#define DISPLAY_ORIENTATION (GUI_SWAP_XY)
+//#define DISPLAY_ORIENTATION (GUI_SWAP_XY)
 
 //
 // Touch screen
@@ -248,12 +274,14 @@ GUI_PID_STATE pstate;
 //#define LCD_REG_ADDRESS   (*(volatile U16*)LCD_BASE)
 //#define LCD_DATA_ADDRESS  (*(volatile U16*)(LCD_BASE_DATA))
 
-#define  LCD_BASE_Addr               ((U32)(0x60000000 | 0x00000000))
-#define  LCD_BASE_Data               ((U32)(0x60000000|0x00020000))
-#define  LCD_CMD                     (*(U16 *)(LCD_BASE_Addr))
-#define  LCD_Data                    (*(U16 *)(LCD_BASE_Data))
-
-
+#define  LCD_BASE_Addr               ((unsigned int)(0x60000000 | 0x00000000))
+#define  LCD_BASE_Data               ((unsigned int)(0x60000000|0x00020000))
+//#define  LCD_CMD                     (*(unsigned short int *)(LCD_BASE_Addr))
+//#define  LCD_Data                    (*(unsigned short int *)(LCD_BASE_Data))
+#define LCD_CMD 	(uint32_t *)LCD_BASE_Addr
+#define LCD_Data	(uint32_t *)LCD_BASE_Data
+/* Private Variables *********************************************************/
+extern SRAM_HandleTypeDef hsram1;
 
 
 /*********************************************************************
@@ -271,7 +299,9 @@ GUI_PID_STATE pstate;
 */
 void LcdWriteReg(U16 Reg) {
   // ... TBD by user
-	LCD_CMD = Reg;
+	//LCD_CMD = Reg;
+	HAL_SRAM_Write_16b(&hsram1, LCD_CMD, &Reg, 1);
+
 }
 
 /********************************************************************
@@ -281,9 +311,10 @@ void LcdWriteReg(U16 Reg) {
 * Function description:
 *   Writes a value to a display register
 */
-static void LcdWriteData(U16 Data) {
+void LcdWriteData(U16 Data) {
   // ... TBD by user
-	LCD_Data = Data;
+	//LCD_Data = Data;
+	HAL_SRAM_Write_16b(&hsram1, LCD_Data, &Data, 1);
 }
 
 /********************************************************************
@@ -296,7 +327,8 @@ static void LcdWriteData(U16 Data) {
 static void LcdWriteDataMultiple(U16 * pData, int NumItems) {
   while (NumItems--) {
     // ... TBD by user
-	  LCD_Data = *pData++;
+	 // LCD_Data = *pData++;
+	 HAL_SRAM_Write_16b(&hsram1, LCD_Data, pData, NumItems);
   }
 }
 
@@ -310,7 +342,8 @@ static void LcdWriteDataMultiple(U16 * pData, int NumItems) {
 static void LcdReadDataMultiple(U16 * pData, int NumItems) {
   while (NumItems--) {
     // ... TBD by user
-	  *pData++ = LCD_Data;
+	//mel  *pData++ = LCD_Data;
+	  HAL_SRAM_Read_16b(&hsram1, LCD_Data, pData, NumItems);
   }
 }
 
@@ -342,8 +375,17 @@ void LCD_X_Config(void) {
   //
   // Set display driver and color conversion
   //
+#ifdef SSD1289
   pDevice = GUI_DEVICE_CreateAndLink(GUIDRV_FLEXCOLOR, GUICC_M565, 0, 0);		//mel GUICC_565 will swap red and blue - might need for bmp display
- // pDevice = GUI_DEVICE_CreateAndLink(GUIDRV_COMPACT_COLOR_16, GUICC_M565, 0, 0);	  	   	//but will mess up color defines in emwin
+#elif ILI9481
+  pDevice = GUI_DEVICE_CreateAndLink(GUIDRV_FLEXCOLOR, GUICC_565, 0, 0);
+#elif SSD1963
+  pDevice = GUI_DEVICE_CreateAndLink(GUIDRV_FLEXCOLOR, GUICC_M565, 0, 0);
+#else
+  pDevice = GUI_DEVICE_CreateAndLink(GUIDRV_FLEXCOLOR, GUICC_565, 0, 0);		//ili9341
+#endif
+
+  // pDevice = GUI_DEVICE_CreateAndLink(GUIDRV_COMPACT_COLOR_16, GUICC_M565, 0, 0);	  	   	//but will mess up color defines in emwin
   //GUIDRV_COMPACT_COLOR_16 is used for EmWin, GUIDRV_FLEXCOLOR is used for STemWin
   //
   // Display driver configuration, required for Lin-driver
@@ -353,8 +395,15 @@ void LCD_X_Config(void) {
   //
   // Orientation
   //
+
+#ifdef ILI9481
+  Config.Orientation = GUI_SWAP_XY;// | GUI_MIRROR_Y; //GUI_SWAP_XY | GUI_MIRROR_Y;
+#elif SSD1963
+
+#else
   Config.Orientation = GUI_SWAP_XY | GUI_MIRROR_Y;
-  Config.NumDummyReads = 1; //SSD1298 nedds 1 dummy read
+#endif
+  Config.NumDummyReads = 1; //SSD1289 needs 1 dummy read
   GUIDRV_FlexColor_Config(pDevice, &Config);
   //
   // Set controller and operation mode
@@ -372,7 +421,21 @@ void LCD_X_Config(void) {
   //Permitted values for parameter pfMode
   //GUIDRV_FLEXCOLOR_M16C0B16	16bpp, no cache, 16 bit bus *
   //GUIDRV_FLEXCOLOR_M16C1B16	16bpp, cache, 16 bit bus
+#ifdef SSD1289
+  //ssd1289
   GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66702, GUIDRV_FLEXCOLOR_M16C0B16);
+#elif ILI9341
+  //ili9341
+  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66709, GUIDRV_FLEXCOLOR_M16C0B16);
+#elif ILI9481
+  //ili9481
+  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66709, GUIDRV_FLEXCOLOR_M16C0B16);
+#elif SSD1963
+  //ssd1963
+  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66720, GUIDRV_FLEXCOLOR_M16C0B16);
+#else
+	#error "Define SSD1289, ILI9341, ILI9481, or SSD1963"
+#endif
 
   //GUIDRV_FlexColor_SetReadFunc66720_B16(pDevice, GUIDRV_FLEXCOLOR_READ_FUNC_II);
 
@@ -471,7 +534,19 @@ int LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
     // to be adapted by the customer...
     //
     // ...
-	  Init_LCD();
+
+#ifdef SSD1289
+	  InitLCD_SSD1289();
+#elif ILI9341
+	  InitLCD_ILI9341();
+#elif ILI9481
+	  InitLCD_ILI9481();
+#elif SSD1963
+	  InitLCD_SSD1963();
+#else
+	#error "Define SSD1289, ILI9341, ILI9481, or SSD1963"
+#endif
+
     return 0;
   }
   default:

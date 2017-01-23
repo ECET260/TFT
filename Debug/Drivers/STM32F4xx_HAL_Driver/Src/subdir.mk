@@ -17,8 +17,6 @@ C_SRCS += \
 ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c \
 ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c \
 ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c \
-../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc.c \
-../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc_ex.c \
 ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c \
 ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_sram.c \
 ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c \
@@ -40,8 +38,6 @@ OBJS += \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.o \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc_ex.o \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_sram.o \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o \
@@ -63,8 +59,6 @@ C_DEPS += \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.d \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.d \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.d \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc.d \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc_ex.d \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.d \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_sram.d \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.d \
@@ -78,7 +72,7 @@ Drivers/STM32F4xx_HAL_Driver/Src/%.o: ../Drivers/STM32F4xx_HAL_Driver/Src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/mdundas/git/TFT/Inc" -I"/home/mdundas/git/TFT/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/mdundas/git/TFT/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/mdundas/git/TFT/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I"/home/mdundas/git/TFT/Drivers/CMSIS/Include" -I"/home/mdundas/git/TFT/Drivers/STemWin/inc" -I"/home/mdundas/git/TFT/Drivers/STemWin/Config"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -DSSD1289 -I"/home/mdundas/git/TFT/Inc" -I"/home/mdundas/git/TFT/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/mdundas/git/TFT/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/mdundas/git/TFT/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I"/home/mdundas/git/TFT/Drivers/CMSIS/Include" -I"/home/mdundas/git/TFT/Drivers/STemWin/inc" -I"/home/mdundas/git/TFT/Drivers/STemWin/Config"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
