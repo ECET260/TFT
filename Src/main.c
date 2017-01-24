@@ -35,6 +35,7 @@
 #include "stm32f4xx_hal.h"
 
 /* USER CODE BEGIN Includes */
+#include "LCD_STM32F4.h"
 #include "GUI.h"
 #include "DIALOG.h"
 /* USER CODE END Includes */
@@ -68,12 +69,7 @@ static void MX_USART2_UART_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-#define  LCD_BASE_Addr               ((unsigned int)(0x60000000 | 0x00000000))
-#define  LCD_BASE_Data               ((unsigned int)(0x60000000|0x00020000))
-//#define  LCD_CMD                     (*(unsigned short int *)(LCD_BASE_Addr))
-//#define  LCD_Data                    (*(unsigned short int *)(LCD_BASE_Data))
-#define LCD_CMD 	(uint32_t *)LCD_BASE_Addr
-#define LCD_Data	(uint32_t *)LCD_BASE_Data
+
 /* USER CODE END 0 */
 
 int main(void)
@@ -329,7 +325,7 @@ static void MX_FSMC_Init(void)
   Timing.AccessMode = FSMC_ACCESS_MODE_A;
   /* ExtTiming */
   ExtTiming.AddressSetupTime = 3;
-  ExtTiming.AddressHoldTime = 0;
+  ExtTiming.AddressHoldTime = 1;
   ExtTiming.DataSetupTime = 3;
   ExtTiming.BusTurnAroundDuration = 0;
   ExtTiming.CLKDivision = 0;

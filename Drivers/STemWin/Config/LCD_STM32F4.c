@@ -16,12 +16,7 @@
 #include "LCDConf.h"
 
 
-#define  LCD_BASE_Addr               ((unsigned int)(0x60000000 | 0x00000000))
-#define  LCD_BASE_Data               ((unsigned int)(0x60000000|0x00020000))
-//#define  LCD_CMD                     (*(unsigned short int *)(LCD_BASE_Addr))
-//#define  LCD_Data                    (*(unsigned short int *)(LCD_BASE_Data))
-#define LCD_CMD 	(uint32_t *)LCD_BASE_Addr
-#define LCD_Data	(uint32_t *)LCD_BASE_Data
+
 /* Private Variables *********************************************************/
 extern SRAM_HandleTypeDef hsram1;
 
@@ -78,6 +73,8 @@ void Init_LCD2(void)
 
 }
 
+//adapted from http://forum.arduino.cc/index.php?topic=153663.0;nowap
+//solved SSD189 ID code 0x8999 blurry fonts issue.
 void InitLCD_SSD1289()
 {
 	  /* Reset */
@@ -87,35 +84,39 @@ void InitLCD_SSD1289()
 	  HAL_GPIO_WritePin(LCD_RESET_GPIO_Port, LCD_RESET_Pin, GPIO_PIN_SET);
 	  HAL_Delay(10);
 
-	  Write_CD(0x00,0x0001);
-	  Write_CD(0x01,0x3B3F);
-	  Write_CD(0x02,0x0600);
-	  Write_CD(0x0C,0x0007);
-	  Write_CD(0x0D,0x0006);
-	  Write_CD(0x0E,0x3200);
-	  Write_CD(0x1E,0x00BB);
-	  Write_CD(0x03,0x6A64);
-	  Write_CD(0x0F,0x0000);
-	  Write_CD(0x44,0xEF00);
-	  Write_CD(0x45,0x0000);
-	  Write_CD(0x46,0x013F);
+	  Write_CD(0x00,0x0001); // oscillator bit0 OSCEN: 1 = on, 0 = off
+	  //    TFT_Orientation(_orientation);
+	  Write_CD(0x01,0x3B3F); // driver output control
+	  	  	  	  	  	  	 // REV = 1: Displays all character and graphics display sections with reversal
+	  	  	  	  	  	  	 // BGR = 1: <B><G><R> color is assigned from S0
+	  	  	  	  	  	  	 // TB = 1: G0 shifts to G319
+	  Write_CD(0x02,0x0600); // driving waveform control
+	  Write_CD(0x0C,0x0007); // power control 2 VRC[2:0]: Adjust VCIX2 output voltage to 5.8V
+	  Write_CD(0x0D,0x0006); // power control 3 VRH[3:0]: Set amplitude magnification of V LCD63 to Vref x 2.020
+	  Write_CD(0x0E,0x3200); // power control 4
+	  Write_CD(0x1E,0x00BB); // power control 5
+	  Write_CD(0x03,0x6A64); // power control
+	  Write_CD(0x0F,0x0000); // gate scan position
+	  Write_CD(0x44,0xEF00); // horizontal ram address position
+	  Write_CD(0x45,0x0000); // vertical ram address position
+	  Write_CD(0x46,0x013F); // vertical ram address position
 
-	  Write_CD(0x30, 0x0000);
-	  Write_CD(0x31, 0x0706);
-	  Write_CD(0x32, 0x0206);
-	  Write_CD(0x33, 0x0300);
-	  Write_CD(0x34, 0x0002);
-	  Write_CD(0x35, 0x0000);
-	  Write_CD(0x36, 0x0707);
-	  Write_CD(0x37, 0x0200);
-	  Write_CD(0x3A, 0x0908);
-	  Write_CD(0x3B, 0x0F0D);
+	  Write_CD(0x30, 0x0000); // gamma control
+	  Write_CD(0x31, 0x0706); //
+	  Write_CD(0x32, 0x0206); //
+	  Write_CD(0x33, 0x0300); //
+	  Write_CD(0x34, 0x0002); //
+	  Write_CD(0x35, 0x0000); //
+	  Write_CD(0x36, 0x0707); //
+	  Write_CD(0x37, 0x0200); //
+	  Write_CD(0x3A, 0x0908); //
+	  Write_CD(0x3B, 0x0F0D); //
 
-	  Write_CD(0x28,0x0006);
-	  Write_CD(0x10,0x0000);
+//	  Write_CD(0x28,0x0006);
+	  Write_CD(0x10,0x0000);  // sleep mode: 0 = exit, 1 = enter
 	  HAL_Delay(50);
-	  Write_CD(0x11,0x6070);
-	  Write_CD(0x07,0x0033);
+	  Write_CD(0x11,0x6070);  // entry mode
+	  Write_CD(0x07,0x0033);  // display control
 	  HAL_Delay(100);
 }
 
@@ -135,7 +136,7 @@ void InitLCD_SSD1289_2()
     Write_CD(0x000E, 0x2B00 ); // power control 4
     Write_CD(0x001E, 0x00B7 ); // power control 5
     Write_CD(0x0002, 0x0600 ); // driving waveform control
-    Write_CD(0x0010, 0x0000 ); // sleep mode: 0 = exit, 1 = enter
+    Write_CD(0x0010, 0x0000 ); // SLP bit 0:sleep mode: 0 = exit, 1 = enter
 //    TFT_Orientation(_orientation);
     Write_CD(0x0001, 0x2B3F ); // driver output control
 //    Write_CD(0x0011, 0x6078 ); // entry mode
@@ -182,8 +183,6 @@ void InitLCD_SSD1289_2()
 
 void Write_Command(uint16_t reg, uint16_t data)
 {
-//  LCD->Register = reg;
-//  LCD->Data = data;
 //	*LCD_CMD = reg;
 //	*LCD_Data = data;
 	HAL_SRAM_Write_16b(&hsram1, LCD_CMD, &reg, 1);

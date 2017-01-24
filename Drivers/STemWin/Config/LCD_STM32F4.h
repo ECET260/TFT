@@ -66,6 +66,10 @@
 #include "stm32f4xx_it.h"
 
 /* Private defines */
+#define LCD_CMD 	(uint32_t *)0x60000000
+#define LCD_Data	(uint32_t *)0x60020000
+
+
 #define ILI9341_RESET				0x01
 #define ILI9341_SLEEP_OUT			0x11
 #define ILI9341_GAMMA				0x26
@@ -97,13 +101,7 @@
 #define ILI9341_INTERFACE			0xF6
 #define ILI9341_PRC					0xF7
 
-/* Type Definitions **********************************************************/
 
-typedef struct
-{
-  __IO uint16_t Register;  /* LCD Index Write            Address offset 0x00 */
-  __IO uint16_t Data;      /* LCD Data Write             Address offset 0x02 */
-}LCD_TypeDef;
 
 /* Definitions ***************************************************************/
 
