@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=//VBOXSVR/mdundas/git/TFT/Inc
+HeaderPath=C:/Users/Mel/git/TFT/Inc
 HeaderFiles=stm32f4xx_it.h;stm32f4xx_hal_conf.h;main.h;
-SourcePath=//VBOXSVR/mdundas/git/TFT/Src
+SourcePath=C:/Users/Mel/git/TFT/Src
 SourceFiles=stm32f4xx_it.h;stm32f4xx_hal_conf.h;main.h;stm32f4xx_it.c;stm32f4xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

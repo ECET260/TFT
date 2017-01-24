@@ -106,7 +106,7 @@ int main(void)
 	GUI_DispStringHCenterAt("ECET260", 160, 100);
 
 
-	int regTemp;
+	uint32_t regTemp;
 
 	HAL_SRAM_Read_16b(&hsram1, LCD_CMD, &regTemp, 1);
 	GUI_DispHexAt(regTemp, 130, 200, 4);
@@ -318,18 +318,18 @@ static void MX_FSMC_Init(void)
   /* Timing */
   Timing.AddressSetupTime = 15;
   Timing.AddressHoldTime = 15;
-  Timing.DataSetupTime = 15;
-  Timing.BusTurnAroundDuration = 0;
-  Timing.CLKDivision = 0;
-  Timing.DataLatency = 0;
+  Timing.DataSetupTime = 30;
+  Timing.BusTurnAroundDuration = 15;
+  Timing.CLKDivision = 16;
+  Timing.DataLatency = 17;
   Timing.AccessMode = FSMC_ACCESS_MODE_A;
   /* ExtTiming */
-  ExtTiming.AddressSetupTime = 3;
-  ExtTiming.AddressHoldTime = 1;
-  ExtTiming.DataSetupTime = 3;
-  ExtTiming.BusTurnAroundDuration = 0;
-  ExtTiming.CLKDivision = 0;
-  ExtTiming.DataLatency = 0;
+  ExtTiming.AddressSetupTime = 5;
+  ExtTiming.AddressHoldTime = 15;
+  ExtTiming.DataSetupTime = 5;
+  ExtTiming.BusTurnAroundDuration = 5;
+  ExtTiming.CLKDivision = 16;
+  ExtTiming.DataLatency = 17;
   ExtTiming.AccessMode = FSMC_ACCESS_MODE_A;
 
   if (HAL_SRAM_Init(&hsram1, &Timing, &ExtTiming) != HAL_OK)

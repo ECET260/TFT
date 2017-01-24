@@ -1,7 +1,7 @@
 #MicroXplorer Configuration settings - do not modify
-FSMC.AddressSetupTime1=5
+FSMC.AddressSetupTime1=15
 FSMC.BusTurnAroundDuration1=15
-FSMC.DataSetupTime1=42
+FSMC.DataSetupTime1=30
 FSMC.ExtendedAddressSetupTime1=5
 FSMC.ExtendedBusTurnAroundDuration1=5
 FSMC.ExtendedDataSetupTime1=5
@@ -233,7 +233,7 @@ ProjectManager.ProjectFileName=TFT.ioc
 ProjectManager.ProjectName=TFT
 ProjectManager.StackSize=0x200
 ProjectManager.TargetToolchain=SW4STM32
-ProjectManager.ToolChainLocation=/home/mdundas/git/TFT
+ProjectManager.ToolChainLocation=C\:\\Users\\Mel\\git\\TFT
 ProjectManager.UnderRoot=true
 ProjectManager.functionlistsort=1-MX_GPIO_Init-GPIO-false-HAL,2-MX_FSMC_Init-FSMC-false-HAL,3-MX_CRC_Init-CRC-false-HAL,4-MX_SPI2_Init-SPI2-false-HAL,5-SystemClock_Config-RCC-false-HAL,6-MX_USART2_UART_Init-USART2-false-HAL
 RCC.48MHZClocksFreq_Value=48000000
