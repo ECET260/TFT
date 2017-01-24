@@ -78,8 +78,48 @@ void Init_LCD2(void)
 
 }
 
-
 void InitLCD_SSD1289()
+{
+	  /* Reset */
+
+	  HAL_GPIO_WritePin(LCD_RESET_GPIO_Port, LCD_RESET_Pin, GPIO_PIN_RESET);
+	  HAL_Delay(30);
+	  HAL_GPIO_WritePin(LCD_RESET_GPIO_Port, LCD_RESET_Pin, GPIO_PIN_SET);
+	  HAL_Delay(10);
+
+	  Write_CD(0x00,0x0001);
+	  Write_CD(0x01,0x3B3F);
+	  Write_CD(0x02,0x0600);
+	  Write_CD(0x0C,0x0007);
+	  Write_CD(0x0D,0x0006);
+	  Write_CD(0x0E,0x3200);
+	  Write_CD(0x1E,0x00BB);
+	  Write_CD(0x03,0x6A64);
+	  Write_CD(0x0F,0x0000);
+	  Write_CD(0x44,0xEF00);
+	  Write_CD(0x45,0x0000);
+	  Write_CD(0x46,0x013F);
+
+	  Write_CD(0x30, 0x0000);
+	  Write_CD(0x31, 0x0706);
+	  Write_CD(0x32, 0x0206);
+	  Write_CD(0x33, 0x0300);
+	  Write_CD(0x34, 0x0002);
+	  Write_CD(0x35, 0x0000);
+	  Write_CD(0x36, 0x0707);
+	  Write_CD(0x37, 0x0200);
+	  Write_CD(0x3A, 0x0908);
+	  Write_CD(0x3B, 0x0F0D);
+
+	  Write_CD(0x28,0x0006);
+	  Write_CD(0x10,0x0000);
+	  HAL_Delay(50);
+	  Write_CD(0x11,0x6070);
+	  Write_CD(0x07,0x0033);
+	  HAL_Delay(100);
+}
+
+void InitLCD_SSD1289_2()
 {
 	  /* Reset */
 
