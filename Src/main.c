@@ -76,6 +76,8 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+	PROGBAR_Handle hProgbar, hProgbar1;
+	BUTTON_Handle hButton;
 
   /* USER CODE END 1 */
 
@@ -103,14 +105,42 @@ int main(void)
 	GUI_SetFont(&GUI_Font24_1);
 	GUI_SetColor(GUI_YELLOW);		//foreground or text color
 
-	GUI_DispStringHCenterAt("ECET260", 160, 100);
+#ifdef ILI9481
+	GUI_DispStringHCenterAt("ECET260", 240, 50);
+
+	GUI_DrawGradientH(15, 220, 465, 300, 0x0000FF, 0x00FFFF);
+
+	PROGBAR_SetDefaultSkin(PROGBAR_SKIN_FLEX); // Sets the default skin for new widgets
+
+/* Create progress bar at location x = 10, y = 10, length = 219, height = 30 */
+	hProgbar = PROGBAR_CreateEx(50, 235, 385, 50, 0, WM_CF_SHOW, 0, GUI_ID_PROGBAR0);
+#elif SSD1963
+	GUI_SetFont(&GUI_FontD60x80);
+
+	GUI_DrawGradientH(15, 300, 785, 450, 0x0000FF, 0x00FFFF);
+
+	PROGBAR_SetDefaultSkin(PROGBAR_SKIN_FLEX); // Sets the default skin for new widgets
 
 
+#else
+	GUI_DispStringHCenterAt("ECET260", 160, 50);
+
+	GUI_DrawGradientH(5, 150, 315, 235, 0x0000FF, 0x00FFFF);
+
+	PROGBAR_SetDefaultSkin(PROGBAR_SKIN_FLEX); // Sets the default skin for new widgets
+
+/* Create progress bar at location x = 10, y = 10, length = 219, height = 30 */
+	hProgbar = PROGBAR_CreateEx(50, 180, 219, 30, 0, WM_CF_SHOW, 0, GUI_ID_PROGBAR0);
+#endif
+
+/*
 	uint32_t regTemp;
 
 	HAL_SRAM_Read_16b(&hsram1, LCD_CMD, &regTemp, 1);
 	GUI_DispHexAt(regTemp, 130, 200, 4);
 	GUI_Exec();
+*/
+
 
   /* USER CODE END 2 */
 

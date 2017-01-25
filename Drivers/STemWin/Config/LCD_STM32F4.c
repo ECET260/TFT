@@ -505,20 +505,3 @@ void InitLCD_ILI9481(void)
     HAL_Delay(25);
 
 }
-/*********************************************************************
-*
-*       LCD_X_InitController
-*
-* Purpose:
-*   Initializes the display controller
-*/
-void _InitController(void)
-{
-    /* Set up the display controller and put it into operation. If the
-    *  display controller is not initialized by any external routine
-    *  this needs to be adapted by the customer.
-    */
-
-
-}
-

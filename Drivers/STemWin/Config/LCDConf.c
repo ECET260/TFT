@@ -266,20 +266,7 @@ extern SRAM_HandleTypeDef hsram1;
 *
 **********************************************************************
 */
-//
-// COG interface register addr.
-//
-//#define LCD_BASE           ((u32)(0x60000000|0x00000000))
-//#define LCD_BASE_DATA     ((u32)(0x60000000|0x00020000))
-//#define LCD_REG_ADDRESS   (*(volatile U16*)LCD_BASE)
-//#define LCD_DATA_ADDRESS  (*(volatile U16*)(LCD_BASE_DATA))
 
-#define  LCD_BASE_Addr               ((unsigned int)(0x60000000 | 0x00000000))
-#define  LCD_BASE_Data               ((unsigned int)(0x60000000|0x00020000))
-//#define  LCD_CMD                     (*(unsigned short int *)(LCD_BASE_Addr))
-//#define  LCD_Data                    (*(unsigned short int *)(LCD_BASE_Data))
-#define LCD_CMD 	(uint32_t *)LCD_BASE_Addr
-#define LCD_Data	(uint32_t *)LCD_BASE_Data
 /* Private Variables *********************************************************/
 extern SRAM_HandleTypeDef hsram1;
 
@@ -397,7 +384,7 @@ void LCD_X_Config(void) {
   //
 
 #ifdef ILI9481
-  Config.Orientation = GUI_SWAP_XY;// | GUI_MIRROR_Y; //GUI_SWAP_XY | GUI_MIRROR_Y;
+  Config.Orientation = GUI_SWAP_XY ; //| GUI_MIRROR_Y; //GUI_SWAP_XY | GUI_MIRROR_Y;
 #elif SSD1963
 
 #else
