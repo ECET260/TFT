@@ -126,6 +126,9 @@
 void Write_Command(uint16_t reg, uint16_t data);
 void Write_CD(uint16_t reg, uint16_t data);
 
+void LcdWriteReg(uint16_t reg);
+void LcdWriteData(uint16_t data);
+
 void Init_GPIO(void);
 void Init_FSMC(void);
 void Init_SysTick(void);

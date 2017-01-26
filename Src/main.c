@@ -51,7 +51,7 @@ SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+extern GUI_PID_STATE pstate;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -76,7 +76,10 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	PROGBAR_Handle hProgbar, hProgbar1;
+	int count = 0;
+	char countString[10];
+
+	PROGBAR_Handle hProgbar;
 	BUTTON_Handle hButton;
 
   /* USER CODE END 1 */
@@ -99,11 +102,18 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	GUI_Init();
 
+	GUI_SetFont(&GUI_Font8x16);
 	GUI_SetBkColor(GUI_BLUE);
 	GUI_Clear();
 
-	GUI_SetFont(&GUI_Font24_1);
-	GUI_SetColor(GUI_YELLOW);		//foreground or text color
+	GUI_SetColor(GUI_CYAN);			//foreground or text color
+	GUI_DispString("ECET260 Test Program\tStemwin ver: ");
+
+	GUI_DispString(GUI_GetVersionString());
+	GUI_DispString("\n\n\n");
+
+	GUI_SetFont(&GUI_Font32B_ASCII);
+	GUI_SetColor(GUI_WHITE);		//foreground or text color
 
 #ifdef ILI9481
 	GUI_DispStringHCenterAt("ECET260", 240, 50);
@@ -122,24 +132,46 @@ int main(void)
 	PROGBAR_SetDefaultSkin(PROGBAR_SKIN_FLEX); // Sets the default skin for new widgets
 
 
-#else
+#else //SSD1289
 	GUI_DispStringHCenterAt("ECET260", 160, 50);
 
 	GUI_DrawGradientH(5, 150, 315, 235, 0x0000FF, 0x00FFFF);
 
+	/* Create progress bar at location x = 10, y = 10, length = 219, height = 30 */
+	hProgbar = PROGBAR_CreateEx(50, 180, 219, 30, 0, WM_CF_SHOW, 0, GUI_ID_PROGBAR0);
+
 	PROGBAR_SetDefaultSkin(PROGBAR_SKIN_FLEX); // Sets the default skin for new widgets
 
 /* Create progress bar at location x = 10, y = 10, length = 219, height = 30 */
-	hProgbar = PROGBAR_CreateEx(50, 180, 219, 30, 0, WM_CF_SHOW, 0, GUI_ID_PROGBAR0);
-#endif
+	/* Set progress bar font */
+	PROGBAR_SetFont(hProgbar, &GUI_Font8x16);
 
-/*
+	PROGBAR_SetMinMax(hProgbar, 0, 99);
+
+	/* Set progress bar text */
+	PROGBAR_SetText(hProgbar, "...");
+
+
+	// Create the button
+	hButton = BUTTON_CreateEx(120, 100, 80, 60, 0, WM_CF_SHOW, 0, GUI_ID_BUTTON0);
+	BUTTON_SetFont(hButton, &GUI_Font8x16);
+	// Set the button text
+	BUTTON_SetText(hButton, "Test");
+
 	uint32_t regTemp;
 
+	GUI_SetFont(&GUI_Font16B_ASCII);
+	GUI_SetColor(GUI_YELLOW);
+
 	HAL_SRAM_Read_16b(&hsram1, LCD_CMD, &regTemp, 1);
-	GUI_DispHexAt(regTemp, 130, 200, 4);
+	GUI_DispHexAt(regTemp, 10, 20, 4);
+
 	GUI_Exec();
-*/
+#endif
+
+
+
+
 
 
   /* USER CODE END 2 */
@@ -148,6 +180,37 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		GUI_PID_GetCurrentState(&pstate);
+
+	 		GUI_SetFont(&GUI_Font8x16);
+
+
+	 		if (pstate.Pressed) {
+	 			GUI_DispDecAt( pstate.x, 280,20,4);
+	 			GUI_DispDecAt( pstate.y, 280,40,4);
+	 			GUI_DispStringAt("-P-", 280,60);
+
+
+
+	 		}
+	 		else {
+	 			GUI_DispDecAt( 0, 280,20,4);
+	 			GUI_DispDecAt( 0, 280,40,4);
+	 			GUI_DispStringAt("- -", 280,60);
+	 		}
+
+	 		if(BUTTON_IsPressed(hButton))
+	 		{
+	 			count++;
+	 			count%=100;
+	 			sprintf(countString, "%d", count);
+
+	 			PROGBAR_SetValue(hProgbar, count);	//use dec value for bar position
+	 		 	PROGBAR_SetText(hProgbar, countString); 	//use string for text on progress bar
+
+	 		}
+
+	 		GUI_Delay(50);
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */

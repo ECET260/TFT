@@ -174,7 +174,7 @@ void InitLCD_SSD1289_2()
     Write_CD(0x004e, 0x0000 ); // ram address set
     Write_CD(0x004f, 0x0000 ); // ram address set
  //   Write_Command( 0x0022 ); // write GRAM
-    HAL_SRAM_Write_16b(&hsram1, LCD_CMD, 0x0022, 1);
+//    HAL_SRAM_Write_16b(&hsram1, LCD_CMD, 0x0022, 1);
 }
 
 /*
