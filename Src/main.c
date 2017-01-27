@@ -52,6 +52,7 @@ SRAM_HandleTypeDef hsram1;
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 extern GUI_PID_STATE pstate;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -78,6 +79,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
 	int count = 0;
 	char countString[10];
+	GUI_HSPRITE hSprite;
 
 	PROGBAR_Handle hProgbar;
 	BUTTON_Handle hButton;
@@ -114,6 +116,7 @@ int main(void)
 
 	GUI_SetFont(&GUI_Font32B_ASCII);
 	GUI_SetColor(GUI_WHITE);		//foreground or text color
+
 
 #ifdef ILI9481
 	GUI_DispStringHCenterAt("ECET260", 240, 50);
@@ -158,6 +161,7 @@ int main(void)
 	// Set the button text
 	BUTTON_SetText(hButton, "Test");
 
+	//display ID code for TFT
 	uint32_t regTemp;
 
 	GUI_SetFont(&GUI_Font16B_ASCII);
@@ -168,10 +172,6 @@ int main(void)
 
 	GUI_Exec();
 #endif
-
-
-
-
 
 
   /* USER CODE END 2 */
@@ -205,7 +205,7 @@ int main(void)
 	 			count%=100;
 	 			sprintf(countString, "%d", count);
 
-	 			PROGBAR_SetValue(hProgbar, count);	//use dec value for bar position
+	 			PROGBAR_SetValue(hProgbar, count);			//use dec value for bar position
 	 		 	PROGBAR_SetText(hProgbar, countString); 	//use string for text on progress bar
 
 	 		}
