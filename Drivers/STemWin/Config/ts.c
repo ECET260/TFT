@@ -145,6 +145,11 @@ unsigned short int TPReadX(void)
 #define XDIVISOR 3.69  	//TSRIGHT-TSLEFT)/480
 #define YDIVISOR 5.28	//TSBOTTOM-TSTOP)/320
 
+#elif SSD1963
+
+#define XDIVISOR 2.82  	//TSBOTTOM-TSTOP)/600
+#define YDIVISOR 2.22	//TSRIGHT-TSLEFT)/800
+
 #else
 
 #define XDIVISOR 5.54	//(TSRIGHT-TSLEFT)/320

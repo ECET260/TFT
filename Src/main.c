@@ -79,7 +79,6 @@ int main(void)
   /* USER CODE BEGIN 1 */
 	int count = 0;
 	char countString[10];
-	GUI_HSPRITE hSprite;
 
 	PROGBAR_Handle hProgbar;
 	BUTTON_Handle hButton;
@@ -175,8 +174,28 @@ int main(void)
 
 	GUI_DrawGradientH(15, 300, 785, 450, 0x0000FF, 0x00FFFF);
 
-	PROGBAR_SetDefaultSkin(PROGBAR_SKIN_FLEX); // Sets the default skin for new widgets
+	/* Create progress bar at location x = 50, y = 325, length = 700, height = 100 */
+	hProgbar = PROGBAR_CreateEx(50, 325, 700, 100, 0, WM_CF_SHOW, 0, GUI_ID_PROGBAR0);
 
+
+	// Create the button
+	hButton = BUTTON_CreateEx(380, 200, 80, 60, 0, WM_CF_SHOW, 0, GUI_ID_BUTTON0);
+
+
+
+	//display ID code for SSD1963 TFT
+	uint16_t regTemp[6];
+
+	GUI_SetFont(&GUI_Font16B_ASCII);
+	GUI_SetColor(GUI_YELLOW);
+
+	LcdWriteReg(0xa1);
+	HAL_SRAM_Read_16b(&hsram1, LCD_CMD, &regTemp, 5);
+	GUI_DispHexAt(regTemp[0], 10, 20, 2);	//0x01
+	GUI_DispHex(regTemp[1], 2);				//0x57
+	GUI_DispHex(regTemp[2], 2);				//0x61
+	GUI_DispHex(regTemp[3], 2);				//0x01
+	GUI_DispHex(regTemp[4], 2);				//0xff
 
 #else //SSD1289
 	GUI_DispStringHCenterAt("ECET260", 160, 50);
@@ -197,11 +216,10 @@ int main(void)
 	GUI_SetFont(&GUI_Font16B_ASCII);
 	GUI_SetColor(GUI_YELLOW);
 
-//	LcdWriteReg(0x00);
+	LcdWriteReg(0x00);
 	HAL_SRAM_Read_16b(&hsram1, LCD_CMD, &regTemp, 1);
 	GUI_DispHexAt(regTemp[0], 10, 20, 4);
 
-	GUI_Exec();
 #endif
 
 
@@ -250,6 +268,22 @@ int main(void)
 			GUI_DispDecAt( 0, 440,20,4);
 			GUI_DispDecAt( 0, 440,40,4);
 			GUI_DispStringAt("- -", 440,60);
+		}
+
+#elif SSD1963
+
+		if (pstate.Pressed) {
+			GUI_DispDecAt( pstate.x, 760,20,4);
+			GUI_DispDecAt( pstate.y, 760,40,4);
+			GUI_DispStringAt("-P-", 760,60);
+
+
+
+		}
+		else {
+			GUI_DispDecAt( 0, 760,20,4);
+			GUI_DispDecAt( 0, 760,40,4);
+			GUI_DispStringAt("- -", 760,60);
 		}
 
 #else
