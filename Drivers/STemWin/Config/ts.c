@@ -140,8 +140,17 @@ unsigned short int TPReadX(void)
 //#define XDIVISOR (TSRIGHT-TSLEFT)/320
 //#define YDIVISOR (TSBOTTOM-TSTOP)/240
 
-#define XDIVISOR 5.54
-#define YDIVISOR 7.04
+#ifdef ILI9481
+
+#define XDIVISOR 3.69  	//TSRIGHT-TSLEFT)/480
+#define YDIVISOR 5.28	//TSBOTTOM-TSTOP)/320
+
+#else
+
+#define XDIVISOR 5.54	//(TSRIGHT-TSLEFT)/320
+#define YDIVISOR 7.04	//(TSBOTTOM-TSTOP)/240
+
+#endif
 
 void Convert_Pos(void)
 {

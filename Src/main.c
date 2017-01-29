@@ -127,6 +127,49 @@ int main(void)
 
 /* Create progress bar at location x = 10, y = 10, length = 219, height = 30 */
 	hProgbar = PROGBAR_CreateEx(50, 235, 385, 50, 0, WM_CF_SHOW, 0, GUI_ID_PROGBAR0);
+
+	// Create the button
+	hButton = BUTTON_CreateEx(200, 120, 80, 60, 0, WM_CF_SHOW, 0, GUI_ID_BUTTON0);
+
+	//display ID code for TFT
+	uint16_t regTemp[6];
+
+	GUI_SetFont(&GUI_Font16B_ASCII);
+	GUI_SetColor(GUI_YELLOW);
+
+	LcdWriteReg(0xbf);
+	HAL_SRAM_Read_16b(&hsram1, LCD_CMD, &regTemp, 6);
+	GUI_DispHexAt(regTemp[3], 10, 20, 2);
+	GUI_DispHex(regTemp[4], 2);
+
+
+
+#elif ILI9341
+	GUI_DispStringHCenterAt("ECET260", 160, 50);
+
+	GUI_DrawGradientH(5, 150, 315, 235, 0x0000FF, 0x00FFFF);
+
+	/* Create progress bar at location x = 10, y = 10, length = 219, height = 30 */
+	hProgbar = PROGBAR_CreateEx(50, 180, 219, 30, 0, WM_CF_SHOW, 0, GUI_ID_PROGBAR0);
+
+
+	// Create the button
+	hButton = BUTTON_CreateEx(120, 100, 80, 60, 0, WM_CF_SHOW, 0, GUI_ID_BUTTON0);
+
+
+	//display ID code for TFT
+	uint16_t regTemp[6];
+
+	GUI_SetFont(&GUI_Font16B_ASCII);
+	GUI_SetColor(GUI_YELLOW);
+
+	LcdWriteReg(0xd3);
+	HAL_SRAM_Read_16b(&hsram1, LCD_CMD, &regTemp, 4);
+	GUI_DispHexAt(regTemp[2], 10, 20, 2);
+	GUI_DispHex(regTemp[2], 2);
+
+	GUI_Exec();
+
 #elif SSD1963
 	GUI_SetFont(&GUI_FontD60x80);
 
@@ -143,9 +186,29 @@ int main(void)
 	/* Create progress bar at location x = 10, y = 10, length = 219, height = 30 */
 	hProgbar = PROGBAR_CreateEx(50, 180, 219, 30, 0, WM_CF_SHOW, 0, GUI_ID_PROGBAR0);
 
+
+	// Create the button
+	hButton = BUTTON_CreateEx(120, 100, 80, 60, 0, WM_CF_SHOW, 0, GUI_ID_BUTTON0);
+
+
+	//display ID code for TFT
+	uint16_t regTemp[6];
+
+	GUI_SetFont(&GUI_Font16B_ASCII);
+	GUI_SetColor(GUI_YELLOW);
+
+//	LcdWriteReg(0x00);
+	HAL_SRAM_Read_16b(&hsram1, LCD_CMD, &regTemp, 1);
+	GUI_DispHexAt(regTemp[0], 10, 20, 4);
+
+	GUI_Exec();
+#endif
+
+
+
+
 	PROGBAR_SetDefaultSkin(PROGBAR_SKIN_FLEX); // Sets the default skin for new widgets
 
-/* Create progress bar at location x = 10, y = 10, length = 219, height = 30 */
 	/* Set progress bar font */
 	PROGBAR_SetFont(hProgbar, &GUI_Font8x16);
 
@@ -155,24 +218,12 @@ int main(void)
 	PROGBAR_SetText(hProgbar, "...");
 
 
-	// Create the button
-	hButton = BUTTON_CreateEx(120, 100, 80, 60, 0, WM_CF_SHOW, 0, GUI_ID_BUTTON0);
+
 	BUTTON_SetFont(hButton, &GUI_Font8x16);
 	// Set the button text
 	BUTTON_SetText(hButton, "Test");
 
-	//display ID code for TFT
-	uint32_t regTemp;
-
-	GUI_SetFont(&GUI_Font16B_ASCII);
-	GUI_SetColor(GUI_YELLOW);
-
-	HAL_SRAM_Read_16b(&hsram1, LCD_CMD, &regTemp, 1);
-	GUI_DispHexAt(regTemp, 10, 20, 4);
-
 	GUI_Exec();
-#endif
-
 
   /* USER CODE END 2 */
 
@@ -180,9 +231,28 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		GUI_PID_GetCurrentState(&pstate);
 
-	 		GUI_SetFont(&GUI_Font8x16);
+	  GUI_PID_GetCurrentState(&pstate);
+
+	  GUI_SetFont(&GUI_Font8x16);
+
+#ifdef ILI9481
+
+		if (pstate.Pressed) {
+			GUI_DispDecAt( pstate.x, 440,20,4);
+			GUI_DispDecAt( pstate.y, 440,40,4);
+			GUI_DispStringAt("-P-", 440,60);
+
+
+
+		}
+		else {
+			GUI_DispDecAt( 0, 440,20,4);
+			GUI_DispDecAt( 0, 440,40,4);
+			GUI_DispStringAt("- -", 440,60);
+		}
+
+#else
 
 
 	 		if (pstate.Pressed) {
@@ -198,7 +268,7 @@ int main(void)
 	 			GUI_DispDecAt( 0, 280,40,4);
 	 			GUI_DispStringAt("- -", 280,60);
 	 		}
-
+#endif
 	 		if(BUTTON_IsPressed(hButton))
 	 		{
 	 			count++;
