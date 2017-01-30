@@ -217,7 +217,7 @@ int main(void)
 	GUI_SetColor(GUI_YELLOW);
 
 	LcdWriteReg(0x00);
-	HAL_SRAM_Read_16b(&hsram1, LCD_CMD, &regTemp, 1);
+	HAL_SRAM_Read_16b(&hsram1, LCD_CMD, regTemp, 1);
 	GUI_DispHexAt(regTemp[0], 10, 20, 4);
 
 #endif
