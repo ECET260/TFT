@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lSTemWin532_CM4_GCC_ot
+LIBS := -lSTemWin532_CM4_GCC
 

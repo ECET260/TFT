@@ -100,6 +100,8 @@ int main(void)
   MX_SPI2_Init();
   MX_USART2_UART_Init();
 
+  HAL_GPIO_WritePin(LCD_BL_GPIO_Port, LCD_BL_Pin, GPIO_PIN_RESET);
+
   /* USER CODE BEGIN 2 */
 	GUI_Init();
 
